@@ -1,0 +1,76 @@
+Project Description:
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+This project is about the analysis of twitter for data collection, community detection, and classifiction on tweets on the basis of sentiments.
+** with each new run of collect.py, it will rewrite all the existing data from previous run.
+** following intermediate file gets genrated, 
+   'tweets_collect.json' have tweets
+   'twt_classified.json' have predicted polarity.
+** Undirected graph
+
+Collection of twitter data through twitter API:(collect.py)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+In collect.py data collection process is happening, once we run this file, it dumps tweets from the twitter that contains 'football' 
+keyword in it into a file named as 'tweets_collect.json' as json object.
+
+
+Each json object in this file contains tweet text, its id, user id and its screen name.
+Json allows to better handling of such dictionary kind of data.
+
+Sample Tweet:
+
+{
+ "text": "",
+ "id": ,
+ "screen_name": ""
+}
+
+
+Apart from it This file also selects unique user id from the collected tweets and fetches follower, and friend list for each user.
+for each user we create a file on system with (user_**.json) naming convention.
+Sample user_*.json
+{
+ "followers":
+ "friends":
+ "screen_name":
+ "id":
+}
+
+
+
+Clustering for community:(cluster.py)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This file has two main responsibilities:
+1> First of all it goes through all the files created as profile for each user(user_*.json).
+   It will try to cretae a edge between any two nodes if:
+   1. They are friend of each other or follow each other.
+   2. They have common follower or friends, using jacard similarity we are creating the edge.
+   3. We also selects (1-5) follower or friends for each node and allow them to join the graph.
+   4. It genrates a graph and stores it in 'graph_original.png' for visualization.
+   5. It also dumps the graph into 'graph.txt' using pickle.
+
+2> Using Girvan newman it tries to partition the graph into community based on edge betweenness centrality.
+
+3> Result of clustering is printed over screen and no. of communities along with avergae user gets dumped in 'inetrmediate.json'.
+
+
+Classification of tweets based on sentiment:(classify.py)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1> This file fetches 100 tweets from the collected tweet file('tweets_collect.json') stores them in 'tweet_to_input.json' file.
+2> It uses lexicon approach for sentiment classification(POSITIVE, NEGATIVE, NEUTRAL)
+3> It classifies these tweets and stores custom json object for each tweet in 'twt_classified.json' with polarity as a new field in it.
+4> A list of positive and negative word with polarity is used for classifying tweets.
+
+Sample Tweet in output file:
+{
+ "polarity":
+ "text":
+ "screen_name":
+ "id":
+}
+
+Summary.py:
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Generates summary as indicated and stores all results in summary.txt
+
